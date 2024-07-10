@@ -9,3 +9,10 @@ export const getDictApi = () => {
 export const getDictOneApi = async () => {
   return request.get({ url: '/mock/dict/one' })
 }
+
+/**
+ * 取得維護訊息
+ */
+export const getMaintainApi = async () => {
+  return request.get({ url: '/' })
+}

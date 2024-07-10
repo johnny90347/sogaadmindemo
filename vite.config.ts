@@ -139,19 +139,18 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       cssTarget: ['chrome31']
     },
     server: {
+      host: '0.0.0.0',
       port: 4000,
       proxy: {
-        // 选项写法
-        '/api': {
-          target: 'http://127.0.0.1:8000',
+        '/backend': {
+          target: 'https://ag.jinbabadev.cc/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '')
+          rewrite: (path) => path.replace(/^\/Backend/, '')
         }
       },
       hmr: {
         overlay: false
-      },
-      host: '0.0.0.0'
+      }
     },
     optimizeDeps: {
       include: [

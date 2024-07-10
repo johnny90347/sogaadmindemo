@@ -1,12 +1,13 @@
 /**
  * 请求成功状态码
  */
-export const SUCCESS_CODE = 0
+export const SUCCESS_CODE1 = 1
+export const SUCCESS_CODE2 = true
 
 /**
  * 请求contentType
  */
-export const CONTENT_TYPE: AxiosContentType = 'application/json'
+export const CONTENT_TYPE: AxiosContentType = 'application/x-www-form-urlencoded'
 
 /**
  * 请求超时时间

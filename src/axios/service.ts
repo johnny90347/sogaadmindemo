@@ -5,13 +5,13 @@ import { AxiosInstance, InternalAxiosRequestConfig, RequestConfig, AxiosResponse
 import { ElMessage } from 'element-plus'
 import { REQUEST_TIMEOUT } from '@/constants'
 
-export const PATH_URL = import.meta.env.VITE_API_BASE_PATH
+// export const PATH_URL = import.meta.env.VITE_API_BASE_PATH
 
 const abortControllerMap: Map<string, AbortController> = new Map()
 
 const axiosInstance: AxiosInstance = axios.create({
   timeout: REQUEST_TIMEOUT,
-  baseURL: PATH_URL
+  baseURL: window.location.protocol + '//' + window.location.host + '/backend'
 })
 
 axiosInstance.interceptors.request.use((res: InternalAxiosRequestConfig) => {
