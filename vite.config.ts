@@ -139,13 +139,13 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       cssTarget: ['chrome31']
     },
     server: {
-      host: '0.0.0.0',
+      host: 'admin.local.com',
       port: 4000,
       proxy: {
         '/backend': {
-          target: 'https://ag.jinbabadev.cc/',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/Backend/, '')
+          target: 'https://admin.jinbabadev.cc/',
+          changeOrigin: true
+          // rewrite: (path) => path.replace(/^\/Backend/, '')
         }
       },
       hmr: {

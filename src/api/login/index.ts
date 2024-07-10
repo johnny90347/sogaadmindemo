@@ -1,4 +1,3 @@
-import { get } from 'lodash-es'
 import request from '@/axios'
 import type { UserType } from './types'
 
@@ -47,21 +46,28 @@ export interface ILoginData {
   SS: number
   TS: number
   SR: number
+  token: string
 }
 export const loginApi = (postData: ILoginData): Promise<any> => {
-  return request.post({ url: '/', data: postData })
+  return request.post({
+    url: '/',
+    data: postData,
+    headers: {
+      'X-CSRF': postData.token
+    }
+  })
 }
 
 /**
  * 獲取驗證碼Token
  */
-export interface IVerifyCode {
+export interface IVerifyCodeResponse {
   SR: number
   SS: number
   TS: number
   token: string
 }
-export const getCaptchaTokenApi = (): Promise<IVerifyCode> => {
+export const getCaptchaTokenApi = (): Promise<IVerifyCodeResponse> => {
   return request.get({ url: '/token' })
 }
 
@@ -76,5 +82,7 @@ export const getCaptchaNumberApi = (
 ): Promise<{
   Result: ICaptchaNumberResponse
 }> => {
-  return request.get({ url: 'v0/captchatest/' + `${SR}` })
+  return request.get({
+    url: '/v0/captchatest/' + `${SR}`
+  })
 }

@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { reactive, ref, watch, onMounted } from 'vue'
+import { reactive, ref, watch, onMounted, unref } from 'vue'
 import { Form, FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElCheckbox } from 'element-plus'
@@ -161,8 +161,7 @@ const captchaParams = {
 // 登录
 const signIn = async () => {
   const formRef = await getElFormExpose()
-  const formData = await getFormData()
-  console.log('formData', formData)
+
   await formRef?.validate(async (isValid) => {
     if (isValid) {
       loading.value = true
@@ -182,32 +181,26 @@ const signIn = async () => {
         captchaParams.authcode = captchaNumberResponse.Result.VerificationCode
 
         setTimeout(async () => {
+          loading.value = true
           const loginResponse = await loginApi({
             account: formData.username,
             passwd: formData.password,
             authcode: captchaParams.authcode,
             SS: captchaParams.SS,
             TS: captchaParams.TS,
-            SR: captchaParams.SR
+            SR: captchaParams.SR,
+            token: response.token
           })
+          loading.value = false
           console.log('loginResponse', loginResponse)
-        }, 2000)
+        }, 1000)
 
         // 進行登入
 
         // const res = await loginApi(formData)
         // if (res) {
-        //   // 是否记住我
-        //   if (unref(remember)) {
-        //     userStore.setLoginInfo({
-        //       username: formData.username,
-        //       password: formData.password
-        //     })
-        //   } else {
-        //     userStore.setLoginInfo(undefined)
-        //   }
-        //   userStore.setRememberMe(unref(remember))
-        //   userStore.setUserInfo(res.data)
+        // 是否记住我
+
         //   // 是否使用动态路由
         //   if (appStore.getDynamicRouter) {
         //     getRole()
