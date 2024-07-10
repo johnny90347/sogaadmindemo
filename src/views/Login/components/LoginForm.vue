@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { reactive, ref, watch, onMounted, unref } from 'vue'
+import { reactive, ref, watch, onMounted } from 'vue'
 import { Form, FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElCheckbox } from 'element-plus'
@@ -12,7 +12,7 @@ import { useUserStore } from '@/store/modules/user'
 import { BaseButton } from '@/components/Button'
 import { getMaintainApi } from '@/api/common'
 import { getCaptchaTokenApi, getCaptchaNumberApi, loginApi } from '@/api/login'
-import { UserLoginType, UserType } from '@/api/login/types'
+import { UserLoginType } from '@/api/login/types'
 
 const { required } = useValidator()
 
@@ -167,6 +167,16 @@ const signIn = async () => {
       loading.value = true
       const formData = await getFormData<UserLoginType>()
       try {
+        // 是要存入登入資訊
+        if (remember.value) {
+          userStore.setLoginInfo({
+            username: formData.username,
+            password: formData.password
+          })
+        } else {
+          userStore.setLoginInfo(undefined)
+        }
+
         // 先取得驗證碼Token
         const response = await getCaptchaTokenApi()
 
@@ -179,21 +189,18 @@ const signIn = async () => {
         const captchaNumberResponse = await getCaptchaNumberApi(response.SR)
         if (!captchaNumberResponse) return
         captchaParams.authcode = captchaNumberResponse.Result.VerificationCode
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+        const loginResponse = await loginApi({
+          account: formData.username,
+          passwd: formData.password,
+          authcode: captchaParams.authcode,
+          SS: captchaParams.SS,
+          TS: captchaParams.TS,
+          SR: captchaParams.SR,
+          token: response.token
+        })
 
-        setTimeout(async () => {
-          loading.value = true
-          const loginResponse = await loginApi({
-            account: formData.username,
-            passwd: formData.password,
-            authcode: captchaParams.authcode,
-            SS: captchaParams.SS,
-            TS: captchaParams.TS,
-            SR: captchaParams.SR,
-            token: response.token
-          })
-          loading.value = false
-          console.log('loginResponse', loginResponse)
-        }, 1000)
+        console.log('loginResponse', loginResponse)
 
         // 進行登入
 
