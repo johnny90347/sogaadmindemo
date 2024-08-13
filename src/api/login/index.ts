@@ -1,13 +1,9 @@
 import request from '@/axios'
-import type { UserType } from './types'
+import type { UserType, IVerifyCodeResponse, ICaptchaNumberResponse, IloginResponse } from './types'
 
 interface RoleParams {
   roleName: string
 }
-
-// export const loginApi = (data: UserType): Promise<IResponse<UserType>> => {
-//   return request.post({ url: '/mock/user/login', data })
-// }
 
 export const loginOutApi = (): Promise<IResponse> => {
   return request.get({ url: '/mock/user/loginOut' })
@@ -48,7 +44,7 @@ export interface ILoginData {
   SR: number
   token: string
 }
-export const loginApi = (postData: ILoginData): Promise<any> => {
+export const loginApi = (postData: ILoginData): Promise<IloginResponse> => {
   return request.post({
     url: '/',
     data: postData,
@@ -61,12 +57,7 @@ export const loginApi = (postData: ILoginData): Promise<any> => {
 /**
  * 獲取驗證碼Token
  */
-export interface IVerifyCodeResponse {
-  SR: number
-  SS: number
-  TS: number
-  token: string
-}
+
 export const getCaptchaTokenApi = (): Promise<IVerifyCodeResponse> => {
   return request.get({ url: '/token' })
 }
@@ -74,9 +65,7 @@ export const getCaptchaTokenApi = (): Promise<IVerifyCodeResponse> => {
 /**
  * 獲取數字認證碼
  */
-export interface ICaptchaNumberResponse {
-  VerificationCode: number
-}
+
 export const getCaptchaNumberApi = (
   SR: number
 ): Promise<{
@@ -86,3 +75,7 @@ export const getCaptchaNumberApi = (
     url: '/v0/captchatest/' + `${SR}`
   })
 }
+
+/**
+ * 取得權限
+ */

@@ -4,6 +4,7 @@ import { useLocaleStoreWithOut } from '@/store/modules/locale'
 
 const TIME_AGO_MESSAGE_MAP: {
   'zh-CN': UseTimeAgoMessages
+  'zh-tw': UseTimeAgoMessages
   en: UseTimeAgoMessages
 } = {
   'zh-CN': {
@@ -17,6 +18,19 @@ const TIME_AGO_MESSAGE_MAP: {
     week: (n, past) => (n === 1 ? (past ? '上周' : '下周') : `${n} 周`),
     hour: (n) => `${n} 小时`,
     minute: (n) => `${n} 分钟`,
+    second: (n) => `${n} 秒`
+  },
+  'zh-tw': {
+    justNow: '剛剛',
+    invalid: '無效時間',
+    past: (n) => (n.match(/\d/) ? `${n}前` : n),
+    future: (n) => (n.match(/\d/) ? `${n}後` : n),
+    month: (n, past) => (n === 1 ? (past ? '上個月' : '下個月') : `${n} 個月`),
+    year: (n, past) => (n === 1 ? (past ? '去年' : '明年') : `${n} 年`),
+    day: (n, past) => (n === 1 ? (past ? '昨天' : '明天') : `${n} 天`),
+    week: (n, past) => (n === 1 ? (past ? '上週' : '下週') : `${n} 週`),
+    hour: (n) => `${n} 小時`,
+    minute: (n) => `${n} 分鐘`,
     second: (n) => `${n} 秒`
   },
   en: {

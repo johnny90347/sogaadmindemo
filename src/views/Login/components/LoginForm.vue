@@ -6,21 +6,24 @@ import { ElCheckbox } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
 // import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
-import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useUserStore } from '@/store/modules/user'
 import { BaseButton } from '@/components/Button'
 import { getMaintainApi } from '@/api/common'
 import { getCaptchaTokenApi, getCaptchaNumberApi, loginApi } from '@/api/login'
 import { UserLoginType } from '@/api/login/types'
+import { usePermissionStore } from '@/store/modules/permission'
+import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
+import { getAuthApi } from '@/api/auth'
 
 const { required } = useValidator()
 
 const emit = defineEmits(['to-register'])
 
 const userStore = useUserStore()
+const permissionStore = usePermissionStore()
 
-const { currentRoute } = useRouter()
+const { currentRoute, addRoute, push } = useRouter()
 
 const { t } = useI18n()
 
@@ -200,26 +203,30 @@ const signIn = async () => {
           token: response.token
         })
 
-        console.log('loginResponse', loginResponse)
+        if (!loginResponse) return
+        if (loginResponse.success !== 1) return
 
-        // 進行登入
+        // 儲存token
+        userStore.setToken(loginResponse.uid)
 
-        // const res = await loginApi(formData)
-        // if (res) {
-        // 是否记住我
+        // 取得Auth
+        const authResponse = await getAuthApi()
 
-        //   // 是否使用动态路由
-        //   if (appStore.getDynamicRouter) {
-        //     getRole()
-        //   } else {
-        //     await permissionStore.generateRoutes('static').catch(() => {})
-        //     permissionStore.getAddRouters.forEach((route) => {
-        //       addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
-        //     })
-        //     permissionStore.setIsAddRouters(true)
-        //     push({ path: redirect.value || permissionStore.addRouters[0].path })
-        //   }
-        // }
+        //TODO:動態路由
+        /**
+         * 動態路由的部分先不做,
+         * 直接讀取靜態路由列表做修改
+         * 要做動態路由直接參考官方的範例專案
+         */
+        // 產生路由陣列
+        await permissionStore.generateRoutes('static').catch(() => {})
+        // 添加路由
+        permissionStore.getAddRouters.forEach((route) => {
+          addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
+        })
+
+        permissionStore.setIsAddRouters(true)
+        push({ path: redirect.value || permissionStore.addRouters[0].path })
       } finally {
         loading.value = false
       }

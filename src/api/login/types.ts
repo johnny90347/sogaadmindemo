@@ -9,3 +9,19 @@ export interface UserType {
   role: string
   roleId: string
 }
+
+export interface IVerifyCodeResponse {
+  SR: number
+  SS: number
+  TS: number
+  token: string
+}
+
+export interface ICaptchaNumberResponse {
+  VerificationCode: number
+}
+
+export interface IloginResponse {
+  success: number
+  uid: string
+}
